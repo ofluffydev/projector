@@ -8,11 +8,23 @@ I had the urge to build this years ago, but at the time I only used Java so SDKM
 
 - [ ] Project Detection
 - [ ] Track when project was last opened with Projector
+- [ ] Installation method that doesn't require cargo or git. (Maybe a script?)
+- [ ] Possible learning mode, maybe even within the REPL. (e.g. `projector learn rust` would open a REPL with the Rust docs)
+- [ ] Self updating
+- [ ] Github/Codeberg actions for CI/CD
+- [ ] Projector website with documentation
+- [ ] Projector blog
+- [ ] Deployment options for sending your project to a server/remote machine
 - [x] Automatic Tool Installation
 - [ ] Instant Docker Integration
 - [x] Configuration & Customization
+  - [ ] Themes
   - [x] Pick an editor to open your project by default
     - [x] VSCode
+    - [ ] All Jetbrains Editors
+    - [ ] Vim
+    - [ ] NeoVim
+    - [ ] Nano
     - Let me know if you want more editors!
   - [ ] Interactive settings menu in CLI
   - [ ] REPL Mode
@@ -29,13 +41,13 @@ I had the urge to build this years ago, but at the time I only used Java so SDKM
   - [ ] Swift
   - [ ] Kotlin
 - [x] Store existing projects in a SQLite database for quick access later on
+  - [ ] Command for adding existing projects
   - [ ] Remote syncing for those 10x devs with hundreds of projects
 - [ ] Project "vault" for encrypted storage of sensitive projects
 
 ## Table of Contents
 
 - [Features](#features)
-- [Implemented Features](#implemented-features)
 - [Why Use This?](#why-use-this)
 - [Why Use Multiple Entry Points?](#why-use-multiple-entry-points)
 - [Installation](#installation)

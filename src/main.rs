@@ -25,6 +25,7 @@ enum Commands {
     },
     Settings,
     Gallery,
+    Add
 }
 
 fn main() -> color_eyre::Result<()> {
@@ -76,6 +77,9 @@ fn main() -> color_eyre::Result<()> {
         }
         Commands::Gallery => {
             ui::gallery::show()?;
+        }
+        Commands::Add => {
+            println!("Add command is not implemented yet.");
         }
     }
 
