@@ -6,10 +6,10 @@ use std::process::Command;
 use crate::database::model::Project;
 use crate::state::languages::ProgrammingLanguage;
 use crate::ui::{grab_string::ask, yn};
+use crate::util::is_tool_installed;
 
 pub fn setup(project_name: Option<&str>) {
     if !is_tool_installed("gcc") || !is_tool_installed("make") {
-        // Ask if they'd like to install the necessary tools
         let choice = yn::ask("GCC or Make is not installed. Would you like to install them? (y/n)")
             .expect("Failed to get user input");
 
@@ -60,51 +60,43 @@ pub fn setup(project_name: Option<&str>) {
 
     match project_name {
         Some(name) => {
-            let path = Path::new(name).canonicalize().expect("Failed to get full path");
+            let path = Path::new(name)
+                .canonicalize()
+                .expect("Failed to get full path");
             fs::create_dir(name).expect("Failed to create project directory");
             println!("Project {} created successfully", name);
-            crate::post_setup::run_post_setup(&Project::new(
-                ProgrammingLanguage::C,
-                name.to_string(),
-                path.as_path(),
-            ))
-            .expect("Failed to run post setup");
+            let mut project =
+                Project::new(ProgrammingLanguage::C, name.to_string(), path.as_path());
+            crate::post_setup::run_post_setup(&mut project).expect("Failed to run post setup");
         }
         None => {
             let answer = ask("Project name? (leave blank to use current directory)")
                 .expect("Failed to get project name");
 
             if answer.trim().is_empty() {
-                let path = Path::new(".").canonicalize().expect("Failed to get full path");
+                let path = Path::new(".")
+                    .canonicalize()
+                    .expect("Failed to get full path");
                 println!("Initialized current directory as a C project");
-                crate::post_setup::run_post_setup(&Project::new(
+                let mut project = Project::new(
                     ProgrammingLanguage::C,
                     path.file_name().unwrap().to_str().unwrap().to_string(),
                     path.as_path(),
-                ))
-                .expect("Failed to run post setup");
+                );
+                crate::post_setup::run_post_setup(&mut project).expect("Failed to run post setup");
             } else {
-                let path = Path::new(answer.trim()).canonicalize().expect("Failed to get full path");
+                let path = Path::new(answer.trim())
+                    .canonicalize()
+                    .expect("Failed to get full path");
                 fs::create_dir(answer.trim()).expect("Failed to create project directory");
                 println!("Project {} created successfully", answer.trim());
-                crate::post_setup::run_post_setup(&Project::new(
+                let mut project = Project::new(
                     ProgrammingLanguage::C,
                     path.file_name().unwrap().to_str().unwrap().to_string(),
                     path.as_path(),
-                ))
-                .expect("Failed to run post setup");
+                );
+                crate::post_setup::run_post_setup(&mut project).expect("Failed to run post setup");
             }
         }
     }
-}
-
-fn is_tool_installed(tool: &str) -> bool {
-    if env::var("FAKE_UNINSTALLED").is_ok() {
-        return false;
-    }
-    Command::new(tool)
-        .arg("--version")
-        .output()
-        .map(|output| output.status.success())
-        .unwrap_or(false)
 }

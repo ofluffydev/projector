@@ -1,13 +1,14 @@
 use clap::{Parser, Subcommand};
 use std::io::{self, Write};
 use std::process::Command;
-use ui::{interactive_setup, not_implemented_warning, settings};
+use ui::{interactive_setup, not_implemented_warning, settings, yn};
 
 mod database;
 mod post_setup;
 mod scaffold;
 mod state;
 mod ui;
+pub mod util;
 
 #[derive(Parser)]
 #[command(name = "projector")]
@@ -25,7 +26,8 @@ enum Commands {
     },
     Settings,
     Gallery,
-    Add
+    Add,
+    Clear,
 }
 
 fn main() -> color_eyre::Result<()> {
@@ -80,6 +82,13 @@ fn main() -> color_eyre::Result<()> {
         }
         Commands::Add => {
             println!("Add command is not implemented yet.");
+        }
+        Commands::Clear => {
+            if yn::ask("Are you sure you want to clear the database?")? {
+                database::manage::clear()?;
+            } else {
+                println!("Aborted clearing the database.");
+            }
         }
     }
 

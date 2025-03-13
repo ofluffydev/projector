@@ -20,7 +20,6 @@ pub fn show() -> color_eyre::Result<()> {
     let result = run(terminal, &mut app);
     ratatui::restore();
     if let Some(lang) = app.selected_lang {
-        // Match lang to setup
         match lang {
             ProgrammingLanguage::Rust => {
                 println!("Rust selected. Setting up Rust environment...");
@@ -29,6 +28,10 @@ pub fn show() -> color_eyre::Result<()> {
             ProgrammingLanguage::C => {
                 println!("C selected. Setting up C environment...");
                 scaffold::c::setup(None);
+            }
+            ProgrammingLanguage::Python => {
+                println!("Python selected. Setting up Python environment...");
+                scaffold::python::setup(None);
             }
             _ => {
                 not_implemented_warning::show(format!(

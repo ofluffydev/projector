@@ -7,13 +7,12 @@ use ratatui::{
     DefaultTerminal, Frame,
 };
 
+/// Prompts the user with a yes/no question and returns their answer.
 pub fn ask(question: &str) -> color_eyre::Result<bool> {
-    color_eyre::install()?;
     let terminal = ratatui::init();
     let mut answer = None;
-    let result = run(terminal, question, &mut answer);
+    run(terminal, question, &mut answer)?;
     ratatui::restore();
-    result?;
     Ok(answer.unwrap_or(false))
 }
 
@@ -23,7 +22,7 @@ fn run(
     answer: &mut Option<bool>,
 ) -> color_eyre::Result<()> {
     loop {
-        terminal.draw(|frame| render(frame, question, answer))?;
+        terminal.draw(|frame| render(frame, question))?;
         if let CrosstermEvent::Key(key_event) = event::read()? {
             if key_event.kind == KeyEventKind::Press {
                 match key_event.code {
@@ -46,11 +45,11 @@ fn run(
     }
 }
 
-fn render(frame: &mut Frame, question: &str, _answer: &Option<bool>) {
+fn render(frame: &mut Frame, question: &str) {
     let vertical = Layout::vertical([
-        Constraint::Length(3), // Adjusted to make the first box smaller
-        Constraint::Min(1),    // Ensures the second box fits
-        Constraint::Length(3), // Adjusted to make the third box smaller
+        Constraint::Length(3),
+        Constraint::Min(1),
+        Constraint::Length(3),
     ])
     .split(frame.area());
 

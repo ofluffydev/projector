@@ -67,15 +67,19 @@ pub fn setup(project_name: Option<&str>) {
                     eprintln!("Failed to run cargo init in current directory");
                 } else {
                     println!("Initialized current directory as a Rust project");
-                    let project_path = env::current_dir().expect("Failed to get current directory").canonicalize().expect("Failed to get full path");
+                    let project_path = env::current_dir()
+                        .expect("Failed to get current directory")
+                        .canonicalize()
+                        .expect("Failed to get full path");
                     let project_name = project_path
                         .file_name()
                         .expect("Failed to get project name");
-                    if let Err(e) = crate::post_setup::run_post_setup(&Project::new(
+                    let mut project = Project::new(
                         ProgrammingLanguage::Rust,
                         project_name.to_str().unwrap().to_string(),
                         &project_path,
-                    )) {
+                    );
+                    if let Err(e) = crate::post_setup::run_post_setup(&mut project) {
                         eprintln!("Post setup failed: {}", e);
                     }
                 }
@@ -90,13 +94,16 @@ pub fn setup(project_name: Option<&str>) {
                     eprintln!("Error: {}", String::from_utf8_lossy(&output.stderr));
                 } else {
                     println!("Project {} created successfully", name);
-                    let project_path = Path::new(name).canonicalize().expect("Failed to get full path");
+                    let project_path = Path::new(name)
+                        .canonicalize()
+                        .expect("Failed to get full path");
                     let project_name = project_path.file_name().unwrap().to_str().unwrap();
-                    if let Err(e) = crate::post_setup::run_post_setup(&Project::new(
+                    let mut project = Project::new(
                         ProgrammingLanguage::Rust,
                         project_name.to_string(),
                         project_path.as_path(),
-                    )) {
+                    );
+                    if let Err(e) = crate::post_setup::run_post_setup(&mut project) {
                         eprintln!("Post setup failed: {}", e);
                     }
                 }
@@ -120,17 +127,21 @@ pub fn setup(project_name: Option<&str>) {
                     eprintln!("Failed to run cargo init in current directory");
                 } else {
                     println!("Initialized current directory as a Rust project");
-                    let project_path = env::current_dir().expect("Failed to get current directory").canonicalize().expect("Failed to get full path");
+                    let project_path = env::current_dir()
+                        .expect("Failed to get current directory")
+                        .canonicalize()
+                        .expect("Failed to get full path");
                     let project_name = project_path
                         .file_name()
                         .expect("Failed to get project name")
                         .to_str()
                         .expect("Failed to convert project name to string");
-                    if let Err(e) = crate::post_setup::run_post_setup(&Project::new(
+                    let mut project = Project::new(
                         ProgrammingLanguage::Rust,
                         project_name.to_string(),
                         &project_path,
-                    )) {
+                    );
+                    if let Err(e) = crate::post_setup::run_post_setup(&mut project) {
                         eprintln!("Post setup failed: {}", e);
                     }
                 }
@@ -145,13 +156,16 @@ pub fn setup(project_name: Option<&str>) {
                     eprintln!("Error: {}", String::from_utf8_lossy(&output.stderr));
                 } else {
                     println!("Project {} created successfully", answer.trim());
-                    let project_path = Path::new(answer.trim()).canonicalize().expect("Failed to get full path");
+                    let project_path = Path::new(answer.trim())
+                        .canonicalize()
+                        .expect("Failed to get full path");
                     let project_name = project_path.file_name().unwrap().to_str().unwrap();
-                    if let Err(e) = crate::post_setup::run_post_setup(&Project::new(
+                    let mut project = Project::new(
                         ProgrammingLanguage::Rust,
                         project_name.to_string(),
-                        project_path.as_path()
-                    )) {
+                        project_path.as_path(),
+                    );
+                    if let Err(e) = crate::post_setup::run_post_setup(&mut project) {
                         eprintln!("Post setup failed: {}", e);
                     }
                 }

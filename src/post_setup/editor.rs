@@ -31,6 +31,7 @@ impl Default for Config {
 
 pub fn run_editor_setup(project_dir: &Path) -> color_eyre::Result<()> {
     let cfg: Config = confy::load("projector", None)?;
+    println!("Config loaded: {:?}", cfg); // Debug print
 
     if !cfg.open_editor_after_setup {
         println!("Open editor after setup option is disabled.");
@@ -67,6 +68,7 @@ pub fn run_editor_setup(project_dir: &Path) -> color_eyre::Result<()> {
             };
 
             let code_available = code_output.status.success();
+            println!("VS Code available: {}", code_available); // Debug print
 
             if code_available {
                 let output = if cfg!(target_os = "windows") {
@@ -87,6 +89,8 @@ pub fn run_editor_setup(project_dir: &Path) -> color_eyre::Result<()> {
                         "Failed to open VS Code in directory: {}",
                         project_dir.display()
                     );
+                } else {
+                    println!("VS Code opened successfully."); // Debug print
                 }
             } else {
                 let choice =

@@ -7,6 +7,13 @@ I had the urge to build this years ago, but at the time I only used Java so SDKM
 ## Implemented Features
 
 - [ ] Project Detection
+- [ ] More advanced options in gallery instead of just launching into editor
+- [ ] Pre-commit hooks for git to show lines of codes/other stats
+- [ ] Purge the repo of unholy Python code (replace with a better method for generating starter code)
+- [ ] Visual Studio Code Plugin
+- [ ] Docker setup for testing the tool (Possibly using the tools own docker feature)
+- [ ] Quick gist/pastebin integration for sharing code snippets
+- [ ] Github/Gitlab/Codeberg Integration via API's
 - [ ] Track when project was last opened with Projector
 - [ ] Installation method that doesn't require cargo or git. (Maybe a script?)
 - [ ] Possible learning mode, maybe even within the REPL. (e.g. `projector learn rust` would open a REPL with the Rust docs)
@@ -22,6 +29,7 @@ I had the urge to build this years ago, but at the time I only used Java so SDKM
   - [x] Pick an editor to open your project by default
     - [x] VSCode
     - [ ] All Jetbrains Editors
+      - gonna make list of them here when I get to it
     - [ ] Vim
     - [ ] NeoVim
     - [ ] Nano
@@ -30,8 +38,9 @@ I had the urge to build this years ago, but at the time I only used Java so SDKM
   - [ ] REPL Mode
 - [x] `new` Command
   - [ ] Type language to quickly select
+  - [ ] Swap between framework/language mode?
   - [x] Rust
-  - [ ] Python
+  - [x] Python
   - [ ] JavaScript
   - [ ] Java
   - [x] C

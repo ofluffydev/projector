@@ -11,6 +11,8 @@ use ratatui::{
 };
 use std::io::{self};
 
+use super::yn;
+
 #[derive(Debug, Default, serde::Serialize, serde::Deserialize)]
 struct Config {
     editor: String,
@@ -23,12 +25,16 @@ pub fn show() -> color_eyre::Result<()> {
     let terminal = ratatui::init();
     let conn = setup_database()?;
     let projects = get_all_projects(&conn)?;
-    let result = run(terminal, &projects);
+    let result = run(terminal, &conn, &projects);
     ratatui::restore();
     result
 }
 
-fn run(mut terminal: DefaultTerminal, projects: &[Project]) -> color_eyre::Result<()> {
+fn run(
+    mut terminal: DefaultTerminal,
+    conn: &rusqlite::Connection,
+    projects: &[Project],
+) -> color_eyre::Result<()> {
     if projects.is_empty() {
         return Err(color_eyre::eyre::eyre!(
             "No projects found in the database."
@@ -57,6 +63,15 @@ fn run(mut terminal: DefaultTerminal, projects: &[Project]) -> color_eyre::Resul
                     // Open the selected project
                     open_project(&projects[index])?;
                     break Ok(());
+                }
+                Key::Delete => {
+                    ratatui::restore();
+                    if yn::ask("Are you sure you want to delete this project? (y/n)")? {
+                        std::fs::remove_dir_all(&projects[index].path)?;
+                        crate::database::manage::delete_project(conn, projects[index].id)?;
+                    }
+                    show()?;
+                    break Ok(()); // TODO: ensure this doesn't create deep recursion
                 }
                 Key::Quit => break Ok(()),
                 Key::Other => {}
@@ -105,7 +120,7 @@ fn render(frame: &mut Frame, projects: &[Project], selected_index: usize) {
     frame.render_stateful_widget(project_list, vertical[1], &mut state);
 
     let footer = Paragraph::new(Line::from(Span::from(
-        "Use Up/Down to navigate, Enter to open, Esc or Q to exit",
+        "Use Up/Down to navigate, Enter to open, d to delete, Esc or Q to exit",
     )));
     frame.render_widget(footer, vertical[2]);
 }
@@ -118,6 +133,7 @@ fn read_key() -> Result<Key, io::Error> {
                 KeyCode::Down => return Ok(Key::Down),
                 KeyCode::Enter => return Ok(Key::Enter),
                 KeyCode::Char('q') => return Ok(Key::Quit),
+                KeyCode::Char('d') => return Ok(Key::Delete),
                 _ => return Ok(Key::Other),
             }
         }
@@ -136,10 +152,10 @@ enum Key {
     Down,
     Enter,
     Quit,
+    Delete,
     Other,
 }
 
-/// Blank the screen
 fn blank() -> color_eyre::Result<()> {
     ratatui::init();
     ratatui::restore();
