@@ -6,6 +6,8 @@ I had the urge to build this years ago, but at the time I only used Java so SDKM
 
 ## Implemented Features
 
+? indicates a feature that is not guranteed to be added.
+
 - [ ] Project Detection
 - [ ] More advanced options in gallery instead of just launching into editor
 - [ ] Pre-commit hooks for git to show lines of codes/other stats
@@ -17,7 +19,9 @@ I had the urge to build this years ago, but at the time I only used Java so SDKM
 - [ ] Track when project was last opened with Projector
 - [ ] Installation method that doesn't require cargo or git. (Maybe a script?)
 - [ ] Possible learning mode, maybe even within the REPL. (e.g. `projector learn rust` would open a REPL with the Rust docs)
+  - [ ] Maybe even pull down docs from the internet instead of storing them here?
 - [ ] Self updating
+- [ ] Mini editor for quick edits?
 - [ ] Github/Codeberg actions for CI/CD
 - [ ] Projector website with documentation
 - [ ] Projector blog

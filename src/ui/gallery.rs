@@ -97,7 +97,12 @@ fn render(frame: &mut Frame, projects: &[Project], selected_index: usize) {
     let project_items: Vec<ListItem> = projects
         .iter()
         .map(|project| {
-            let content = Line::from(Span::from(format!("{} - {}", project.name, project.path)));
+            let path_str = if project.path.starts_with("\\\\?\\") {
+                &project.path[4..]
+            } else {
+                &project.path
+            };
+            let content = Line::from(Span::from(format!("{} - {}", project.name, path_str)));
             ListItem::new(content)
         })
         .collect();
