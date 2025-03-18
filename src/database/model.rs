@@ -4,6 +4,7 @@ use chrono::{NaiveDateTime, Utc};
 use rusqlite::{params, Connection, Result};
 
 use crate::state::languages::ProgrammingLanguage;
+use crate::database::manage::sanitize_path;
 
 pub struct Project {
     pub id: i64,
@@ -20,7 +21,7 @@ impl Project {
             id: 0, // Placeholder, SQLite will auto-increment
             type_lang,
             name,
-            path: path.to_string_lossy().into_owned(),
+            path: sanitize_path(&path.to_string_lossy().into_owned()),
             last_opened: None,
             created_on: Utc::now().naive_utc(),
         }

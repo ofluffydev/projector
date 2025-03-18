@@ -67,7 +67,7 @@ fn run(
                 Key::Delete => {
                     ratatui::restore();
                     if yn::ask("Are you sure you want to delete this project? (y/n)")? {
-                        std::fs::remove_dir_all(&projects[index].path)?;
+                        let _ = std::fs::remove_dir_all(&projects[index].path);
                         crate::database::manage::delete_project(conn, projects[index].id)?;
                     }
                     show()?;
@@ -97,12 +97,7 @@ fn render(frame: &mut Frame, projects: &[Project], selected_index: usize) {
     let project_items: Vec<ListItem> = projects
         .iter()
         .map(|project| {
-            let path_str = if project.path.starts_with("\\\\?\\") {
-                &project.path[4..]
-            } else {
-                &project.path
-            };
-            let content = Line::from(Span::from(format!("{} - {}", project.name, path_str)));
+            let content = Line::from(Span::from(format!("{} - {}", project.name, project.path)));
             ListItem::new(content)
         })
         .collect();

@@ -9,6 +9,7 @@ I had the urge to build this years ago, but at the time I only used Java so SDKM
 ? indicates a feature that is not guranteed to be added.
 
 - [ ] Project Detection
+- [ ] Separate commands into different files for cleaner code base
 - [ ] More advanced options in gallery instead of just launching into editor
 - [ ] Pre-commit hooks for git to show lines of codes/other stats
 - [ ] Purge the repo of unholy Python code (replace with a better method for generating starter code)

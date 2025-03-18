@@ -1,7 +1,11 @@
 use clap::{Parser, Subcommand};
+use database::manage::setup_database;
+use database::model::Project;
+use state::languages::ProgrammingLanguage;
 use std::io::{self, Write};
+use std::path::Path;
 use std::process::Command;
-use ui::{interactive_setup, not_implemented_warning, settings, yn};
+use ui::{grab_string, interactive_setup, not_implemented_warning, settings, yn};
 
 mod database;
 mod post_setup;
@@ -26,7 +30,9 @@ enum Commands {
     },
     Settings,
     Gallery,
-    Add,
+    Add {
+        path: Option<String>,
+    },
     Clear,
 }
 
@@ -80,8 +86,56 @@ fn main() -> color_eyre::Result<()> {
         Commands::Gallery => {
             ui::gallery::show()?;
         }
-        Commands::Add => {
-            println!("Add command is not implemented yet.");
+        Commands::Add { path } => {
+            let path_str = if let Some(arg) = path {
+                arg
+            } else {
+                &grab_string::ask("Path to the project?")?
+            };
+
+            if path_str.is_empty() {
+                println!("Path cannot be empty.");
+                return Ok(());
+            }
+
+            let path = Path::new(&path_str);
+            if !path.exists() {
+                println!("Path does not exist.");
+                return Ok(());
+            }
+            if !path.is_dir() {
+                println!("Path is not a directory.");
+                return Ok(());
+            }
+
+            // Convert path to absolute path
+            let path = path.canonicalize()?;
+
+            let project_type = grab_string::ask("Project type? (rust, python, etc.)")?;
+
+            if project_type.is_empty() {
+                println!("Project type cannot be empty.");
+                return Ok(());
+            }
+            // Ask for project name
+            let project_name = grab_string::ask("Project name?")?;
+            if project_name.is_empty() {
+                println!("Project name cannot be empty.");
+                return Ok(());
+            }
+
+            let project_type_mapped = map_project_type(&project_type);
+
+            let mut project = Project::new(project_type_mapped, project_name, &path);
+
+            project.insert(&setup_database()?)?;
+
+            // Print all the project info
+            println!("Project name: {}", project.name);
+            println!("Project type: {:?}", project.type_lang);
+            println!("Project path: {}", project.path);
+
+            println!("Project added!");
         }
         Commands::Clear => {
             if yn::ask("Are you sure you want to clear the database?")? {
@@ -93,4 +147,23 @@ fn main() -> color_eyre::Result<()> {
     }
 
     Ok(())
+}
+
+fn map_project_type(project_type: &str) -> ProgrammingLanguage {
+    match project_type {
+        "rust" => ProgrammingLanguage::Rust,
+        "python" => ProgrammingLanguage::Python,
+        "javascript" => ProgrammingLanguage::JavaScript,
+        "java" => ProgrammingLanguage::Java,
+        "c" => ProgrammingLanguage::C,
+        "cpp" => ProgrammingLanguage::CPlusPlus,
+        "go" => ProgrammingLanguage::Go,
+        "swift" => ProgrammingLanguage::Swift,
+        "kotlin" => ProgrammingLanguage::Kotlin,
+        "csharp" => ProgrammingLanguage::CSharp,
+        "FORCE_UNIMPLEMENTED" => ProgrammingLanguage::UnimplementedForced,
+
+        // All others, default to Unknown
+        _ => unimplemented!("Project type '{}' is not implemented yet.", project_type),
+    }
 }

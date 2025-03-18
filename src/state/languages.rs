@@ -15,6 +15,7 @@ pub enum ProgrammingLanguage {
     Go,
     Swift,
     Kotlin,
+    UnimplementedForced,
 }
 
 impl ProgrammingLanguage {
@@ -30,6 +31,7 @@ impl ProgrammingLanguage {
             ProgrammingLanguage::Go,
             ProgrammingLanguage::Swift,
             ProgrammingLanguage::Kotlin,
+            ProgrammingLanguage::UnimplementedForced,
         ]
     }
 }
@@ -47,6 +49,7 @@ impl ToSql for ProgrammingLanguage {
             ProgrammingLanguage::Go => "Go",
             ProgrammingLanguage::Swift => "Swift",
             ProgrammingLanguage::Kotlin => "Kotlin",
+            ProgrammingLanguage::UnimplementedForced => "UnimplementedForced",
         }))
     }
 }
@@ -64,6 +67,7 @@ impl FromSql for ProgrammingLanguage {
             "Go" => Ok(ProgrammingLanguage::Go),
             "Swift" => Ok(ProgrammingLanguage::Swift),
             "Kotlin" => Ok(ProgrammingLanguage::Kotlin),
+            "UnimplementedForced" => Ok(ProgrammingLanguage::UnimplementedForced),
             other => Err(FromSqlError::Other(Box::<
                 dyn std::error::Error + Send + Sync,
             >::from(format!(

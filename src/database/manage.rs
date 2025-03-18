@@ -64,3 +64,11 @@ pub fn clear() -> Result<usize> {
         return Ok(0);
     }
 }
+
+pub fn sanitize_path(path: &str) -> String {
+    if path.starts_with("\\\\?\\") {
+        path[4..].to_string()
+    } else {
+        path.to_string()
+    }
+}
